@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+<head>
+    <title>UOC :: Unity Online Console</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font: 13px Helvetica, Arial; }
+        li { padding: 5px 10px; }
+        li:nth-child(odd) { background: #eee; }
+
+        .holder:after {
+            border: 1px solid #454f54;
+            overflow: auto;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+
+<div class='holder'>
+
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+    var socket = io( {path: "/socket.io"});
+    var logsnames = [];
+    var d ;
+    var time;
+    var cn;
+
+    var num = 0;
+    socket.on('UOC message', function(data){
+        d = new Date();
+        time = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+        cn = data.ComputerName;
+        if(typeof cn !== "undefined"){
+            num++;
+        //    if(num >7 ) cn = "afaf222"; // To test multiple computers div width
+            var logsnamevalid = logsnames.indexOf(cn );
+            if(logsnamevalid<0){
+                logsnames.push(cn);
+                $(".holder").prepend("<span class='container"+ num+"'>"+ cn+"</span>");
+               // $("head").append("<style>.container"+num+":after {width: 720px; height:100vh; border:1px solid #454f54; overflow-y:scroll; display:inline-block; }</style>" );
+
+                $(".container"+num).css({"width": "720px", "height":"100vh", "border":"1px solid #454f54", "overflow-y":"scroll","float":"left","white-space":"nowrap"});
+                $(".container"+num).append("<div id='"+ cn+"' style='white-space: normal;'></div>");
+                $('#'+cn).append("<ul id=messages"+cn+"></ul>");
+                $("#messages"+cn).css({"list-style-type ": "none", "margin":"0", "padding":"0"});
+
+                console.log(logsnames);
+            }
+
+            //$("#messages"+cn).append("<li style='content: url('imgs/'"+iconsImagesPath(data.LogType)+");'>'"+time+' : ' + cn +"  "+ decodeURI(data.log)+"'</li>");
+
+
+           // $("#messages"+cn).append($("<li>").text(iconsImagesPath(data.LogType)+time+' : ' + cn +"  "+ decodeURI(data.log)));
+            $("#messages"+cn).append($("<li id=liLog"+num+">").text(time+' : ' + decodeURI(data.log)));
+            $("#liLog"+num).prepend(iconsImagesPath(data.LogType));
+            $("#messages"+cn).append($("<li>").text(decodeURI(data.stackTrace)));
+        }
+
+    });
+    function iconsImagesPath(logtype) {
+        var iconFile;
+        switch (logtype)
+        {
+            case "Error":
+                iconFile = "error.png";
+                break;
+            case "Assert":
+                iconFile = "assert.png";
+                break;
+            case "Exception":
+                iconFile = "exception.png";
+                break;
+            case "Warning":
+                iconFile = "warning.png";
+                break;
+            case "Log":
+                iconFile = "log.png";
+                break;
+            default:
+                iconFile = "default.png";
+                break;
+        }
+        return "<img src='imgs/"+iconFile+"' alt='"+logtype+"' width='3%' height='3%'></image>";
+       // return iconFile;
+    }
+</script>
+</body>
+</html>
