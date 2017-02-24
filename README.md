@@ -16,3 +16,8 @@ Quick setup
 > - Start *the server* from the UOC folder.
 > - Drag the **Unity** prefab found in the UOC Asset folder into your Unity project.
 > - *Simple as 1-2-3*.
+
+
+Supports various Log formats: 
+-------------
+![Alt text](https://cloud.githubusercontent.com/assets/51227/23301853/42caf222-fa8c-11e6-8407-3fe4b4a1d8ce.jpg "Browser view")
